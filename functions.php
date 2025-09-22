@@ -85,5 +85,8 @@ function mindset_add_custom_image_sizes( $size_names ) {
 }
 add_filter( 'image_size_names_choose', 'mindset_add_custom_image_sizes' );
 
+// Register custom post types
 require get_theme_file_path() . '/mindset-blocks/mindset-blocks.php';
+require get_theme_file_path() . '/inc/post-types-taxonomies.php';
+
 ?>
