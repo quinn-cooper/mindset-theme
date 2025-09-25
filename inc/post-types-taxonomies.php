@@ -137,6 +137,54 @@ $args = array(
 // Cannot rename post type
 register_post_type( 'fwd-service', $args );
 
+// Job Postings CPT
+$labels = array(
+    'name'                  => _x( 'Job Postings', 'post type general name', 'mindset-theme' ),
+    'singular_name'         => _x( 'Job Posting', 'post type singular name', 'mindset-theme' ),
+    'menu_name'             => _x( 'Job Postings', 'admin menu', 'mindset-theme' ),
+    'add_new'               => _x( 'Add New', 'service', 'mindset-theme' ),
+    'add_new_item'          => __( 'Add New Job Posting', 'mindset-theme' ),
+    'new_item'              => __( 'New Job Posting', 'mindset-theme' ),
+    'edit_item'             => __( 'Edit Job Posting', 'mindset-theme' ),
+    'view_item'             => __( 'View Job Posting', 'mindset-theme' ),
+    'all_items'             => __( 'All Job Postings', 'mindset-theme'  ),
+    'search_items'          => __( 'Search Job Postings', 'mindset-theme' ),
+    'parent_item_colon'     => __( 'Parent Job Postings:', 'mindset-theme' ),
+    'not_found'             => __( 'No Job Postings found.', 'mindset-theme' ),
+    'not_found_in_trash'    => __( 'No Job Postings found in Trash.', 'mindset-theme' ),
+    'insert_into_item'      => __( 'Insert into Job Posting', 'mindset-theme' ),
+    'uploaded_to_this_item' => __( 'Uploaded to this Job Posting', 'mindset-theme' ),
+    'item_link'             => __( 'Job Posting link.', 'mindset-theme' ),
+    'item_link_description' => __( 'A link to a job posting.', 'mindset-theme' ),
+);
+$args = array(
+    'labels'             => $labels,
+    'public'             => true,
+    'publicly_queryable' => true,
+    'show_ui'            => true,
+    'show_in_menu'       => true,
+    'show_in_rest'       => true,
+    'query_var'          => true,
+    'rewrite'            => array( 'slug' => 'careers' ),
+    'capability_type'    => 'post',
+    'has_archive'        => true,
+    'hierarchical'       => false,
+    'menu_position'      => 21,
+    'menu_icon'          => 'dashicons-megaphone',
+    'supports'           => array( 'title', 'editor' ),
+    'template'           => array(
+        array( 'core/heading', array( 'level' => 3, 'content' => 'Role', ) ),
+        array( 'core/paragraph', array( 'placeholder' => 'Describe the role...' ) ),
+        array( 'core/heading', array( 'level' => 3, 'content' => 'Requirements' ) ),
+        array( 'core/list' ),
+        array( 'core/heading', array( 'level' => 3, 'content' => 'Location' ) ),
+        array( 'core/paragraph' ),
+        array( 'core/heading', array( 'level' => 3, 'content' => 'How to Apply' ) ),
+        array( 'core/paragraph' ),
+    )
+);
+register_post_type( 'fwd-job-posting', $args );
+
 }
 add_action( 'init', 'mindset_register_custom_post_types' );
 
@@ -175,6 +223,7 @@ add_action( 'init', 'mindset_register_custom_post_types' );
         'query_var'         => true,
         'rewrite'           => array( 'slug' => 'work-categories' ),
     );
+
     register_taxonomy( 'fwd-work-category', array( 'fwd-work' ), $args );
 
     // Add Featured taxonomy
@@ -210,9 +259,48 @@ $args = array(
     'query_var'         => true,
     'rewrite'           => array( 'slug' => 'featured' ),
 );
+
+register_taxonomy( 'fwd-featured', array( 'fwd-work', 'fwd-testimonial' ), $args );
+
+// Add Service Type taxonomy
+    $labels = array(
+    'name'                  => _x( 'Service Types', 'taxonomy general name', 'mindset-theme' ),
+    'singular_name'         => _x( 'Service Type', 'taxonomy singular name', 'mindset-theme' ),
+    'search_items'          => __( 'Search Service Types', 'mindset-theme' ),
+    'all_items'             => __( 'All Service Type', 'mindset-theme' ),
+    'parent_item'           => __( 'Parent Service Type', 'mindset-theme' ),
+    'parent_item_colon'     => __( 'Parent Service Type:', 'mindset-theme' ),
+    'edit_item'             => __( 'Edit Service Type', 'mindset-theme' ),
+    'view_item'             => __( 'View Service Type', 'mindset-theme' ),
+    'update_item'           => __( 'Update Service Type', 'mindset-theme' ),
+    'add_new_item'          => __( 'Add New Service Type', 'mindset-theme' ),
+    'new_item_name'         => __( 'New Service Type Name', 'mindset-theme' ),
+    'template_name'         => __( 'Service Type Archives', 'mindset-theme' ),
+    'menu_name'             => __( 'Service Type', 'mindset-theme' ),
+    'not_found'             => __( 'No service types found.', 'mindset-theme' ),
+    'no_terms'              => __( 'No service types', 'mindset-theme' ),
+    'items_list_navigation' => __( 'Service Types list navigation', 'mindset-theme' ),
+    'items_list'            => __( 'Service Types list', 'mindset-theme' ),
+    'item_link'             => __( 'Service Type Link', 'mindset-theme' ),
+    'item_link_description' => __( 'A link to a service type.', 'mindset-theme' ),
+);
  
-register_taxonomy( 'fwd-featured', array( 'fwd-work' ), $args );
+$args = array(
+    'hierarchical'      => true,
+    'labels'            => $labels,
+    'show_ui'           => true,
+    'show_in_menu'      => true,
+    'show_in_nav_menu'  => true,
+    'show_in_rest'      => true,
+    'show_admin_column' => true,
+    'query_var'         => true,
+    'rewrite'           => array( 'slug' => 'service-types' ),
+);
+ 
+register_taxonomy( 'fwd-service-type', array( 'fwd-service' ), $args );
+
 }
+
 add_action( 'init', 'mindset_register_taxonomies' );
 
 // Flush rewrite rules when activating the theme

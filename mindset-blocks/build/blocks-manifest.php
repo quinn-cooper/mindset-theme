@@ -98,5 +98,40 @@ return array(
 		'editorScript' => 'file:./index.js',
 		'editorStyle' => 'file:./index.css',
 		'style' => 'file:./style-index.css'
+	),
+	'testimonial-slider' => array(
+		'$schema' => 'https://schemas.wp.org/trunk/block.json',
+		'apiVersion' => 3,
+		'name' => 'mindset-blocks/testimonial-slider',
+		'version' => '1.0.0',
+		'title' => 'Testimonial Slider',
+		'category' => 'widgets',
+		'icon' => 'editor-quote',
+		'description' => 'A slider of testimonials.',
+		'example' => array(
+			
+		),
+		'supports' => array(
+			'html' => false,
+			'multiple' => false
+		),
+		'attributes' => array(
+			'navigation' => array(
+				'type' => 'boolean',
+				'default' => true
+			),
+			'pagination' => array(
+				'type' => 'boolean',
+				'default' => true
+			),
+			'arrowColor' => array(
+				'type' => 'string',
+				'default' => '#003a74'
+			)
+		),
+		'textdomain' => 'testimonial-slider',
+		'editorScript' => 'file:./index.js',
+		'style' => 'file:./style-index.css',
+		'viewScript' => 'file:./view.js'
 	)
 );

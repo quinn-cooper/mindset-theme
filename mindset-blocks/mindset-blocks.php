@@ -89,54 +89,184 @@ function mindset_blocks_render_callbacks( $args, $name ) {
     if ( 'mindset-blocks/service-posts' === $name ) {
         $args['render_callback'] = 'fwd_render_service_posts';
     }
+    if ( 'mindset-blocks/testimonial-slider' === $name ) {
+    $args['render_callback'] = 'fwd_render_testimonial_slider';
+}
     return $args;
 }
-add_filter( 'register_block_type_args', 'mindset_blocks_render_callbacks', 10, 2 );
+add_filter( 'register_block_type_args', 'mindset_blocks_render_callbacks', 10, 2);
 
 	function fwd_render_service_posts( $attributes ) {
     ob_start();
     ?>
-    <div <?php echo get_block_wrapper_attributes(); ?>>
+
+		<!-- Day 6 version commented out; day 7 version below -->
         <?php
+        // $args = array(
+        //     'post_type'      => 'fwd-service',
+        //     'posts_per_page' => -1,
+        //     'order'          => 'ASC',
+        //     'orderby'        => 'title'
+        // );
+ 
+        // $query = new WP_Query( $args );
+ 
+        // if ( $query -> have_posts() ) {
+ 
+        //     echo '<nav class="services-nav">';
+            
+        //     while ( $query -> have_posts() ) {
+        //         $query -> the_post();
+        //         echo '<a href="#'. esc_attr( get_the_ID() ) .'">'. esc_html( get_the_title() ) .'</a>';
+        //     }
+        //     wp_reset_postdata();
+            
+        //     echo '</nav>';
+        
+        //     echo '<section>';
+    
+        //     while ( $query -> have_posts() ) {
+        //         $query -> the_post();
+ 
+        //         echo '<article id="'. esc_attr( get_the_ID() ) .'">';	
+        //             echo '<h2>' . esc_html( get_the_title() ) . '</h2>';
+        //             the_content();
+        //         echo '</article>';
+                
+        //     }
+        //     wp_reset_postdata();
+ 
+        //     echo '</section>';
+        // }
+        ?>
+
+	<div <?php echo get_block_wrapper_attributes(); ?>>
+        <?php
+        // Output the Service navigation
         $args = array(
             'post_type'      => 'fwd-service',
             'posts_per_page' => -1,
             'order'          => 'ASC',
             'orderby'        => 'title'
         );
- 
         $query = new WP_Query( $args );
- 
-        if ( $query -> have_posts() ) {
- 
-            echo '<nav class="services-nav">';
-            
-            while ( $query -> have_posts() ) {
-                $query -> the_post();
-                echo '<a href="#'. esc_attr( get_the_ID() ) .'">'. esc_html( get_the_title() ) .'</a>';
-            }
-            wp_reset_postdata();
-            
-            echo '</nav>';
+        if ( $query -> have_posts() ) :
+            ?>
+            <nav class="services-nav">
+                <?php
+                while ( $query -> have_posts() ) :
+                    $query -> the_post();
+                    ?>
+                    <a href="#<?php echo esc_attr( get_the_ID() ); ?>"><?php echo esc_html( get_the_title() ); ?></a>
+                    <?php
+                endwhile;
+                wp_reset_postdata();
+                ?>
+            </nav>
+            <?php
+        endif;
         
-            echo '<section>';
-    
-            while ( $query -> have_posts() ) {
-                $query -> the_post();
- 
-                echo '<article id="'. esc_attr( get_the_ID() ) .'">';	
-                    echo '<h2>' . esc_html( get_the_title() ) . '</h2>';
-                    the_content();
-                echo '</article>';
-                
-            }
-            wp_reset_postdata();
- 
-            echo '</section>';
-        }
+        // Output the Service posts
+        $taxonomy = 'fwd-service-type';
+        $terms    = get_terms(
+            array(
+                'taxonomy' => $taxonomy
+            )
+        );
+		// loop through each term
+        if( $terms && ! is_wp_error( $terms ) ) :
+            foreach( $terms as $term ) :
+                $args = array(
+                    'post_type'      => 'fwd-service',
+                    'posts_per_page' => -1,
+                    'order'          => 'ASC',
+                    'orderby'        => 'title',
+                    'tax_query'      => array(
+                        array(
+                            'taxonomy' => $taxonomy,
+                            'field'    => 'slug',
+                            'terms'    => $term->slug,
+                        )
+                    ),
+                );
 
+                $query = new WP_Query( $args );
+                if ( $query -> have_posts() ) :
+                    ?>
+                    <section>
+                        <h2><?php echo esc_html( $term->name ); ?></h2>
+                        <?php
+                        while ( $query -> have_posts() ) :
+                            $query -> the_post();
+                            ?>
+                            <article id="<?php echo esc_attr( get_the_ID() ); ?>">
+                                <h3><?php echo esc_html( get_the_title() ); ?></h3>
+                                <?php the_content(); ?>
+                            </article>
+                            <?php
+                        endwhile;
+
+                        wp_reset_postdata();
+                        ?>
+                    </section>
+                    <?php
+                endif;
+            endforeach;
+        endif;
         ?>
     </div>
+
+    <?php
+    return ob_get_clean();
+}
+
+// Callback function for the Testimonial Slider
+function fwd_render_testimonial_slider( $attributes, $content ) {
+    ob_start();
+    $swiper_settings = array(
+        'pagination' => $attributes['pagination'],
+        'navigation' => $attributes['navigation']
+    );
+    // <!-- Add variable that store string containing css custom prop (from edit.js) & arrowColor att as value -->
+    
+    $styles = "--arrow-color: " . $attributes[ "arrowColor" ]
+    ?>
+    <div <?php echo get_block_wrapper_attributes( array( "style" => $styles ) )
+    ?>>
+        <script>
+            const swiper_settings = <?php echo json_encode( $swiper_settings ); ?>;
+            
+        </script>
+        <?php
+        $args = array(
+            'post_type'      => 'fwd-testimonial',
+            'posts_per_page' => -1
+        );
+        $query = new WP_Query( $args );
+        if ( $query->have_posts() ) : ?>
+            <div class="swiper">
+                <div class="swiper-wrapper">
+                    <?php while ( $query->have_posts() ) : $query->the_post(); ?>
+                        <div class="swiper-slide">
+                            <?php the_content(); ?>
+                        </div>
+                    <?php endwhile; ?>
+                </div>
+            </div>
+            <?php if ( $attributes['pagination'] ) : ?>
+                <div class="swiper-pagination"></div>
+            <?php endif; ?>
+            <?php if ( $attributes['navigation'] ) : ?>
+                <button class="swiper-button-prev"></button>
+                <button class="swiper-button-next"></button>
+            <?php endif; ?>
+            <?php
+            wp_reset_postdata();
+        endif;
+        ?>
+    </div>
+
+
     <?php
     return ob_get_clean();
 }

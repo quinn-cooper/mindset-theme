@@ -41,7 +41,6 @@ function mindset_enqueues() {
 		array( 'strategy' => 'defer' ) 
 	);
 }
-
 add_action( 'wp_enqueue_scripts', 'mindset_enqueues' );
 
     // Load scroll-change-color.js and make it depend on scroll-to-top
@@ -53,7 +52,12 @@ add_action( 'wp_enqueue_scripts', 'mindset_enqueues' );
         array('strategy' => 'defer')
     );
 }
+
+// Remove nav block stylesheet
+// wp_dequeue_style("wp-block-navigation");
+
 add_action( 'wp_enqueue_scripts', 'mindset_enqueues' );
+
 
 function mindset_setup() {
     // Load style.css on the backend
@@ -88,5 +92,8 @@ add_filter( 'image_size_names_choose', 'mindset_add_custom_image_sizes' );
 // Register custom post types
 require get_theme_file_path() . '/mindset-blocks/mindset-blocks.php';
 require get_theme_file_path() . '/inc/post-types-taxonomies.php';
+
+// remove nav block stylesheet
+wp_dequeue_style( 'wp-block-navigation' );
 
 ?>
